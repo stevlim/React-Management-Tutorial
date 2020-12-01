@@ -10,6 +10,7 @@ import TableCell from "@material-ui/core/TableCell";
 
 import {withStyles} from '@material-ui/core/styles';
 import { render } from '@testing-library/react';
+import axios from "axios";
 
 const styles = theme => ({
   root: {
@@ -22,34 +23,33 @@ const styles = theme => ({
   }
 });
 
-const customers = [
-  {
-  "id" : 1,
-  "image" : "http://placeimg.com/64/64/any",
-  "name" : "홍길동2",
-  "birthday" : "960122",
-  "gender" : "여자",
-  "job" : "대학생"
-  },
-  {
-    "id" : 2,
-    "image" : "http://placeimg.com/64/64/any?p=1",
-    "name" : "홍길나",
-    "birthday" : "920122",
-    "gender" : "남자",
-    "job" : "회장"
-    },
-    {
-      "id" : 3,
-      "image" : "http://placeimg.com/64/64/any?p=2",
-      "name" : "홍길서",
-      "birthday" : "060122",
-      "gender" : "여자",
-      "job" : "의사"
-      } 
-]
+
 
 class App extends Component {
+  state = {
+    customers: ""
+  };
+
+  
+  componentDidMount() {
+    this.callApi()
+      .then(res => this.setState({customers: res}))
+      .catch(err => console.log(err));
+    
+
+    
+
+  };
+
+  callApi = async () => {
+    const response =  await fetch('/api/customers');
+    const body = response.json();
+
+
+    console.log("body : " + JSON.stringify(body));
+    return body;
+  };
+  
   render() {
     const {classes} = this.props;
     return (
@@ -62,12 +62,12 @@ class App extends Component {
               <TableCell>이름</TableCell>
               <TableCell>생년월일</TableCell>
               <TableCell>성별</TableCell>
-              <TableCell>직업</TableCell>
+              <TableCell>직업2</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
           {
-            customers.map(c => {
+            this.state.customers? this.state.customers.map(c => {
               return (
                 
                   <Customer
@@ -82,7 +82,8 @@ class App extends Component {
                 
                 
               );
-            })
+            
+            }) : ""
           }
             
           </TableBody>
